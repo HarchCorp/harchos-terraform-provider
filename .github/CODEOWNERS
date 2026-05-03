@@ -1,0 +1,20 @@
+# CODEOWNERS file for harchos-terraform-provider
+# https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners
+
+# Default owners for everything in the repo
+* @VitalCheffe
+
+# Provider core
+/internal/provider/ @VitalCheffe
+/internal/client/   @VitalCheffe
+
+# Sovereignty enforcement is critical - require review
+/internal/sovereignty/ @VitalCheffe
+
+# CI/CD
+/.github/ @VitalCheffe
+
+# Documentation
+/README.md       @VitalCheffe
+/CHANGELOG.md    @VitalCheffe
+/CONTRIBUTING.md @VitalCheffe
