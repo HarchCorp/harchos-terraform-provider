@@ -2,6 +2,7 @@ package provider
 
 import (
 	"fmt"
+	"regexp"
 	"testing"
 
 	"github.com/HarchCorp/harchos-terraform-provider/internal/sovereignty"
@@ -62,7 +63,7 @@ func TestAccWorkloadResource_SovereigntyDowngrade(t *testing.T) {
 			// Attempt to downgrade to regional - should fail
 			{
 				Config:      testAccWorkloadResourceConfig("sovereignty-test", "nginx:latest", 1, "regional"),
-				ExpectError: sovereigntyDowngradeError(),
+				ExpectError: regexp.MustCompile(sovereigntyDowngradeError()),
 			},
 		},
 	})
