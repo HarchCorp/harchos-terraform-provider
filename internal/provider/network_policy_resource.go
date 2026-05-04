@@ -364,6 +364,86 @@ func (r *NetworkPolicyResource) Read(ctx context.Context, req resource.ReadReque
         state.UpdatedAt = types.StringValue(result.UpdatedAt)
         state.Tags = frameworkFromStringMap(ctx, result.Tags)
 
+        // Map ingress rules from API response back to state
+        if len(result.Ingress) > 0 {
+                ingressRules := make([]NetworkRuleModel, 0, len(result.Ingress))
+                for _, rule := range result.Ingress {
+                        rm := NetworkRuleModel{
+                                Protocol: types.StringValue(rule.Protocol),
+                                Port:     types.Int64Value(int64(rule.Port)),
+                                Action:   types.StringValue(rule.Action),
+                        }
+                        if len(rule.From) > 0 {
+                                fromVals := make([]attr.Value, 0, len(rule.From))
+                                for _, f := range rule.From {
+                                        fromVals = append(fromVals, types.StringValue(f))
+                                }
+                                fromList, d := types.ListValue(types.StringType, fromVals)
+                                resp.Diagnostics.Append(d...)
+                                rm.From = fromList
+                        } else {
+                                rm.From = types.ListNull(types.StringType)
+                        }
+                        if len(rule.To) > 0 {
+                                toVals := make([]attr.Value, 0, len(rule.To))
+                                for _, to := range rule.To {
+                                        toVals = append(toVals, types.StringValue(to))
+                                }
+                                toList, d := types.ListValue(types.StringType, toVals)
+                                resp.Diagnostics.Append(d...)
+                                rm.To = toList
+                        } else {
+                                rm.To = types.ListNull(types.StringType)
+                        }
+                        ingressRules = append(ingressRules, rm)
+                }
+                ingressList, d := types.ListValueFrom(ctx, state.Ingress.ElementType(ctx), ingressRules)
+                resp.Diagnostics.Append(d...)
+                state.Ingress = ingressList
+        } else {
+                state.Ingress = types.ListNull(state.Ingress.ElementType(ctx))
+        }
+
+        // Map egress rules from API response back to state
+        if len(result.Egress) > 0 {
+                egressRules := make([]NetworkRuleModel, 0, len(result.Egress))
+                for _, rule := range result.Egress {
+                        rm := NetworkRuleModel{
+                                Protocol: types.StringValue(rule.Protocol),
+                                Port:     types.Int64Value(int64(rule.Port)),
+                                Action:   types.StringValue(rule.Action),
+                        }
+                        if len(rule.From) > 0 {
+                                fromVals := make([]attr.Value, 0, len(rule.From))
+                                for _, f := range rule.From {
+                                        fromVals = append(fromVals, types.StringValue(f))
+                                }
+                                fromList, d := types.ListValue(types.StringType, fromVals)
+                                resp.Diagnostics.Append(d...)
+                                rm.From = fromList
+                        } else {
+                                rm.From = types.ListNull(types.StringType)
+                        }
+                        if len(rule.To) > 0 {
+                                toVals := make([]attr.Value, 0, len(rule.To))
+                                for _, to := range rule.To {
+                                        toVals = append(toVals, types.StringValue(to))
+                                }
+                                toList, d := types.ListValue(types.StringType, toVals)
+                                resp.Diagnostics.Append(d...)
+                                rm.To = toList
+                        } else {
+                                rm.To = types.ListNull(types.StringType)
+                        }
+                        egressRules = append(egressRules, rm)
+                }
+                egressList, d := types.ListValueFrom(ctx, state.Egress.ElementType(ctx), egressRules)
+                resp.Diagnostics.Append(d...)
+                state.Egress = egressList
+        } else {
+                state.Egress = types.ListNull(state.Egress.ElementType(ctx))
+        }
+
         diags = resp.State.Set(ctx, state)
         resp.Diagnostics.Append(diags...)
 }
