@@ -19,6 +19,7 @@ var testAccProtoV6ProviderFactories = map[string]func() (tfprotov6.ProviderServe
 // testAccPreCheck is a shared pre-check function for acceptance tests.
 // It validates that required environment variables (HARCHOS_API_KEY, etc.)
 // are set before running acceptance tests.
+// nolint:unused // Required by Terraform acceptance testing framework
 func testAccPreCheck(t *testing.T) {
         t.Helper()
         if os.Getenv("HARCHOS_API_KEY") == "" {
