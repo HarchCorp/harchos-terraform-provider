@@ -305,7 +305,7 @@ func TestHTTPErrorMapping(t *testing.T) {
                         server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                                 w.Header().Set("Content-Type", "application/json")
                                 w.WriteHeader(tc.statusCode)
-                                json.NewEncoder(w).Encode(map[string]string{
+                                _ = json.NewEncoder(w).Encode(map[string]string{
                                         "code":    tc.code,
                                         "message": tc.message,
                                 })
@@ -358,7 +358,7 @@ func TestCreateWorkload(t *testing.T) {
                 wl.UpdatedAt = "2024-01-01T00:00:00Z"
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(wl)
+                _ = json.NewEncoder(w).Encode(wl)
         }))
         defer server.Close()
 
@@ -395,7 +395,7 @@ func TestGetWorkload(t *testing.T) {
                 }
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(Workload{
+                _ = json.NewEncoder(w).Encode(Workload{
                         ID:     "test-id",
                         Name:   "my-workload",
                         Status: "running",
@@ -424,12 +424,12 @@ func TestUpdateWorkload(t *testing.T) {
                 }
 
                 var wl Workload
-                json.NewDecoder(r.Body).Decode(&wl)
+                _ = json.NewDecoder(r.Body).Decode(&wl)
                 wl.Status = "running"
                 wl.UpdatedAt = "2024-01-02T00:00:00Z"
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(wl)
+                _ = json.NewEncoder(w).Encode(wl)
         }))
         defer server.Close()
 
@@ -482,7 +482,7 @@ func TestListHubs(t *testing.T) {
                 }
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(ListHubsResponse{
+                _ = json.NewEncoder(w).Encode(ListHubsResponse{
                         Hubs: []Hub{
                                 {ID: "hub-1", Name: "eu-hub", Region: "eu-west-1", Capacity: 100},
                                 {ID: "hub-2", Name: "us-hub", Region: "us-east-1", Capacity: 200},
@@ -513,7 +513,7 @@ func TestListHubs_WithRegion(t *testing.T) {
                 }
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(ListHubsResponse{
+                _ = json.NewEncoder(w).Encode(ListHubsResponse{
                         Hubs: []Hub{
                                 {ID: "hub-1", Name: "eu-hub", Region: "eu-west-1"},
                         },
@@ -538,7 +538,7 @@ func TestListHubs_WithRegion(t *testing.T) {
 func TestGetNetworkPolicy(t *testing.T) {
         server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(NetworkPolicy{
+                _ = json.NewEncoder(w).Encode(NetworkPolicy{
                         ID:          "np-1",
                         Name:        "test-policy",
                         Region:      "eu-west-1",
@@ -577,12 +577,12 @@ func TestGetNetworkPolicy(t *testing.T) {
 func TestCreateModel(t *testing.T) {
         server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                 var m Model
-                json.NewDecoder(r.Body).Decode(&m)
+                _ = json.NewDecoder(r.Body).Decode(&m)
                 m.ID = "model-123"
                 m.Status = "ready"
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(m)
+                _ = json.NewEncoder(w).Encode(m)
         }))
         defer server.Close()
 
@@ -606,12 +606,12 @@ func TestCreateModel(t *testing.T) {
 func TestCreateStorageVolume(t *testing.T) {
         server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
                 var sv StorageVolume
-                json.NewDecoder(r.Body).Decode(&sv)
+                _ = json.NewDecoder(r.Body).Decode(&sv)
                 sv.ID = "vol-123"
                 sv.Status = "available"
 
                 w.Header().Set("Content-Type", "application/json")
-                json.NewEncoder(w).Encode(sv)
+                _ = json.NewEncoder(w).Encode(sv)
         }))
         defer server.Close()
 
