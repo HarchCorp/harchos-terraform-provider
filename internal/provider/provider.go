@@ -215,6 +215,7 @@ func (p *HarchOSProvider) Resources(_ context.Context) []func() resource.Resourc
                 NewDatasetResource,
                 NewNetworkPolicyResource,
                 NewStorageVolumeResource,
+                NewCarbonAwareScheduleResource,
         }
 }
 
@@ -224,6 +225,7 @@ func (p *HarchOSProvider) DataSources(_ context.Context) []func() datasource.Dat
                 NewHubsDataSource,
                 NewWorkloadDataSource,
                 NewModelDataSource,
+                NewRegionsDataSource,
         }
 }
 
