@@ -13,7 +13,7 @@ import (
 )
 
 const (
-        defaultBaseURL = "https://api.harchos.io/v1"
+        defaultBaseURL = "https://api.harchos.ai/v1"
         defaultTimeout = 30 * time.Second
 )
 

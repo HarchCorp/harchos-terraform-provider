@@ -95,7 +95,7 @@ level sovereignty will always be the more restrictive of the two.
                         },
                         "base_url": schema.StringAttribute{
                                 MarkdownDescription: "The base URL for the HarchOS API. " +
-                                        "Defaults to https://api.harchos.io/v1. " +
+                                        "Defaults to https://api.harchos.ai/v1. " +
                                         "May also be provided via HARCHOS_BASE_URL environment variable. " +
                                         "Use this for testing against a local or staging API.",
                                 Optional: true,
