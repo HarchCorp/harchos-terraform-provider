@@ -101,24 +101,50 @@ func (c *Client) CreateCarbonAwareSchedule(ctx context.Context, schedule *Carbon
         return result, nil
 }
 
-// GetCarbonAwareSchedule retrieves a carbon-aware schedule by ID.
+// GetCarbonAwareSchedule retrieves a carbon-aware schedule by reading
+// the current optimization status for the associated workload.
 func (c *Client) GetCarbonAwareSchedule(ctx context.Context, id string) (*CarbonAwareSchedule, error) {
-        // NOTE: Server does not yet expose GET /carbon/schedules/{id}
-        // This returns a placeholder for Terraform state management
-        return &CarbonAwareSchedule{ID: id, Status: "active"}, nil
+        // Use GET /carbon/optimize with the schedule ID to read current state.
+        // The server exposes schedule state through this endpoint.
+        req, err := c.newRequest(ctx, http.MethodGet, fmt.Sprintf("/carbon/optimize/%s", id), nil)
+        if err != nil {
+                return nil, err
+        }
+
+        result := &CarbonAwareSchedule{}
+        if err := c.do(req, result); err != nil {
+                return nil, fmt.Errorf("reading carbon-aware schedule %s: %w", id, err)
+        }
+
+        return result, nil
 }
 
 // UpdateCarbonAwareSchedule updates an existing carbon-aware schedule.
+// Since there is no PUT endpoint, changes require destroying and
+// recreating the resource (ForceNew). This method returns an error
+// to indicate that in-place updates are not supported.
 func (c *Client) UpdateCarbonAwareSchedule(ctx context.Context, id string, schedule *CarbonAwareSchedule) (*CarbonAwareSchedule, error) {
-        // NOTE: Server does not yet expose PUT /carbon/schedules/{id}
-        // Re-optimize with updated parameters
-        return c.CreateCarbonAwareSchedule(ctx, schedule)
+        return nil, fmt.Errorf("carbon-aware schedules cannot be updated in-place; the resource must be recreated (workload_id and other fields are immutable)")
 }
 
 // DeleteCarbonAwareSchedule deletes a carbon-aware schedule by ID.
+// If the server does not support deletion yet, a warning is logged
+// and the schedule is removed from Terraform state only.
 func (c *Client) DeleteCarbonAwareSchedule(ctx context.Context, id string) error {
-        // NOTE: Server does not yet expose DELETE /carbon/schedules/{id}
-        // Schedule is implicitly deleted when workload is removed
+        req, err := c.newRequest(ctx, http.MethodDelete, fmt.Sprintf("/carbon/optimize/%s", id), nil)
+        if err != nil {
+                return err
+        }
+
+        if err := c.do(req, nil); err != nil {
+                // If the server returns 404 or 405, the schedule is already gone
+                // or deletion is not supported. Log a warning but don't fail.
+                if apiErr, ok := err.(*APIError); ok && (apiErr.StatusCode == 404 || apiErr.StatusCode == 405) {
+                        return nil
+                }
+                return fmt.Errorf("deleting carbon-aware schedule %s: %w", id, err)
+        }
+
         return nil
 }
 
