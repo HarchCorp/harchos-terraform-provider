@@ -3,7 +3,7 @@
 [![CI](https://github.com/HarchCorp/harchos-terraform-provider/actions/workflows/ci.yml/badge.svg)](https://github.com/HarchCorp/harchos-terraform-provider/actions/workflows/ci.yml)
 [![License: Apache 2.0](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
-The **harchos** Terraform provider is the official provider for [HarchCorp](https://harchcorp.io)'s HarchOS infrastructure platform. It enables infrastructure-as-code management of HarchOS compute workloads, ML models, inference endpoints, datasets, network policies, and storage volumes with built-in data sovereignty enforcement.
+The **harchos** Terraform provider is the official provider for [HarchCorp](https://harchcorp.com)'s HarchOS infrastructure platform. It enables infrastructure-as-code management of HarchOS compute workloads, ML models, inference endpoints, datasets, network policies, and storage volumes with built-in data sovereignty enforcement.
 
 ## Quick Start
 
